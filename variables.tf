@@ -1,15 +1,10 @@
 variable "default_tags" {
-  default = {
-    "Name"  = "jcaranay-vpc"
-    "Owner" = "jcaranay"
-  }
   type        = map(any)
   description = "Default tags to be applied to all AWS resources"
 }
 
 variable "namespace" {
-  type    = string
-  default = "JASN"
+  type = string
 }
 
 variable "app_role" {
@@ -33,11 +28,6 @@ variable "remote_data_sources" {
     region = string
   }))
   default = {
-    network = {
-      bucket = "acs730-assignment-jcaranay"
-      key    = "dev/networking/terraform.tfstate"
-      region = "us-east-1"
-    }
   }
 }
 
@@ -55,6 +45,8 @@ variable "igws" {
     vpc_key = string
     rt_key  = string
   }))
+  default = {
+  }
 }
 
 variable "public_route_table" {
@@ -62,6 +54,8 @@ variable "public_route_table" {
     name    = string
     vpc_key = string
   }))
+  default = {
+  }
 }
 
 variable "public_subnets" {
@@ -72,6 +66,8 @@ variable "public_subnets" {
     cidr_block        = string
     availability_zone = string
   }))
+  default = {
+  }
 }
 
 variable "private_route_table" {
@@ -79,6 +75,8 @@ variable "private_route_table" {
     name    = string
     vpc_key = string
   }))
+  default = {
+  }
 }
 
 variable "private_subnets" {
@@ -89,12 +87,16 @@ variable "private_subnets" {
     cidr_block        = string
     availability_zone = string
   }))
+  default = {
+  }
 }
 
 variable "eips" {
   type = map(object({
     name = string
   }))
+  default = {
+  }
 }
 
 
@@ -105,6 +107,8 @@ variable "natgws" {
     pub_sub_key = string,
     rt_key      = string
   }))
+  default = {
+  }
 }
 
 variable "vpc_peering_connections" {

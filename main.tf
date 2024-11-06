@@ -12,7 +12,7 @@ data "terraform_remote_state" "this" {
 locals {
   default_tags  = merge(var.default_tags, { "AppRole" : var.app_role, "Environment" : upper(var.env), "Project" : var.namespace })
   name_prefix   = upper("${var.namespace}-${var.env}")
-  remote_states = { for k, v in data.terraform_remote_state.this : k => v.outputs} 
+  remote_states = { for k, v in data.terraform_remote_state.this : k => v.outputs }
   subnets       = merge(var.public_subnets, var.private_subnets)
 }
 
