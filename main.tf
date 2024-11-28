@@ -11,7 +11,7 @@ data "terraform_remote_state" "this" {
 
 locals {
   default_tags  = merge(var.default_tags, { "AppRole" : var.app_role, "Environment" : upper(var.env), "Project" : var.namespace })
-  name_prefix   = upper("${var.namespace}-${var.env}")
+  name_prefix   = "${var.namespace}-${var.env}"
   remote_states = { for k, v in data.terraform_remote_state.this : k => v.outputs }
   subnets       = merge(var.public_subnets, var.private_subnets)
 }
@@ -21,7 +21,7 @@ resource "aws_vpc" "this" {
   for_each   = var.vpcs
   cidr_block = each.value.cidr_block
   tags = merge(local.default_tags, {
-    Name = upper("${local.name_prefix}-${each.value.name}")
+    Name = "${local.name_prefix}-${each.value.name}"
   })
 }
 
@@ -30,7 +30,7 @@ resource "aws_internet_gateway" "this" {
   for_each = var.igws
   vpc_id   = aws_vpc.this[each.value.vpc_key].id
   tags = merge(local.default_tags, {
-    Name = upper("${local.name_prefix}-${each.value.name}")
+    Name = "${local.name_prefix}-${each.value.name}"
   })
   depends_on = [aws_vpc.this]
 }
@@ -42,7 +42,7 @@ resource "aws_subnet" "this" {
   cidr_block        = each.value.cidr_block
   availability_zone = each.value.availability_zone
   tags = merge(local.default_tags, {
-    Name = upper("${local.name_prefix}-${each.value.name}")
+    Name = "${local.name_prefix}-${each.value.name}"
   })
   depends_on = [aws_vpc.this]
 }
@@ -52,7 +52,7 @@ resource "aws_route_table" "public" {
   for_each = var.public_route_table
   vpc_id   = aws_vpc.this[each.value.vpc_key].id
   tags = merge(local.default_tags, {
-    Name = upper("${local.name_prefix}-${each.value.name}")
+    Name = "${local.name_prefix}-${each.value.name}"
   })
   depends_on = [aws_vpc.this]
 }
@@ -62,7 +62,7 @@ resource "aws_route_table" "private" {
   for_each = var.private_route_table
   vpc_id   = aws_vpc.this[each.value.vpc_key].id
   tags = merge(local.default_tags, {
-    Name = upper("${local.name_prefix}-${each.value.name}")
+    Name = "${local.name_prefix}-${each.value.name}"
   })
   depends_on = [aws_vpc.this]
 }
@@ -89,7 +89,7 @@ resource "aws_route_table_association" "private" {
 resource "aws_eip" "this" {
   for_each = var.eips
   tags = merge(local.default_tags, {
-    Name = upper("${local.name_prefix}-${each.value.name}")
+    Name = "${local.name_prefix}-${each.value.name}"
   })
 }
 
@@ -99,7 +99,7 @@ resource "aws_nat_gateway" "this" {
   allocation_id = aws_eip.this[each.value.eip_key].id
   subnet_id     = aws_subnet.this[each.value.pub_sub_key].id
   tags = merge(local.default_tags, {
-    Name = upper("${local.name_prefix}-${each.value.name}")
+    Name = "${local.name_prefix}-${each.value.name}"
   })
   depends_on = [aws_internet_gateway.this]
 }
@@ -111,7 +111,7 @@ resource "aws_vpc_peering_connection" "this" {
   auto_accept = true
 
   tags = merge(local.default_tags, {
-    Name = upper("${local.name_prefix}-${each.value.name}")
+    Name = "${local.name_prefix}-${each.value.name}"
   })
   depends_on = [aws_vpc.this]
 }
